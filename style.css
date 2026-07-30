@@ -1,14 +1,32 @@
-/* Mengatur background gradasi Hitam, Emas, dan Pink */
+/* Mengatur background gradasi Hitam, Emas, dan Pink yang bergerak */
 body {
-    background: linear-gradient(-45deg, #000000, #d4af37, #ff1493, #1a1a1a);
+    background: linear-gradient(-45deg, #0a0a0a, #d4af37, #ff1493, #000000);
     background-size: 300% 300%;
     animation: gerakGradasi 12s ease infinite;
     color: #ffffff;
 }
 
-/* Animasi supaya gradasinya bergerak halus */
+/* Animasi untuk gradasi latar belakang */
 @keyframes gerakGradasi {
     0% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
     100% { background-position: 0% 50%; }
+}
+
+/* Animasi Pop-in untuk Iframe Player */
+.player-muncul {
+    animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    box-shadow: 0 10px 30px rgba(251, 191, 36, 0.2); 
+    border: 1px solid rgba(251, 191, 36, 0.4);
+}
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9) translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }

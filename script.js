@@ -3,15 +3,15 @@ document.getElementById('playBtn').addEventListener('click', function() {
     const playerContainer = document.getElementById('playerContainer');
 
     if (!url) {
-        alert("Mohon masukkan link musikmu terlebih dahulu, ya!");
+        alert("Jangan lupa masukkan link lagunya!");
         return;
     }
 
     // Reset kontainer dan hapus kelas animasi sebelum memuat yang baru
     playerContainer.innerHTML = '';
-    playerContainer.classList.remove('animate-player');
+    playerContainer.classList.remove('player-muncul');
+    playerContainer.classList.remove('border-white/5'); // Hapus border default Tailwind
 
-    // Beri jeda sangat singkat agar browser mereset state animasi, lalu jalankan
     setTimeout(() => {
         const ytRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
         const ytMatch = url.match(ytRegex);
@@ -20,6 +20,8 @@ document.getElementById('playBtn').addEventListener('click', function() {
         const spotifyMatch = url.match(spotifyRegex);
 
         let iframe = document.createElement('iframe');
+        // Class Tailwind untuk iframe agar pas dengan kontainer
+        iframe.className = "w-full h-full rounded-2xl border-none";
 
         if (ytMatch && ytMatch[1]) {
             const videoId = ytMatch[1];
@@ -28,20 +30,28 @@ document.getElementById('playBtn').addEventListener('click', function() {
             iframe.allowFullscreen = true;
             
             playerContainer.appendChild(iframe);
-            playerContainer.classList.add('animate-player'); // Picu animasi
+            playerContainer.classList.add('player-muncul');
 
         } else if (spotifyMatch && spotifyMatch[1] && spotifyMatch[2]) {
             const type = spotifyMatch[1];
             const id = spotifyMatch[2];
-            iframe.src = `https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=0`;
+            iframe.src = `https://open.spotify.com/embed/$${type}/${id}?utm_source=generator&theme=0`;
             iframe.allow = "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture";
             iframe.loading = "lazy";
             
             playerContainer.appendChild(iframe);
-            playerContainer.classList.add('animate-player'); // Picu animasi
+            playerContainer.classList.add('player-muncul');
 
         } else {
-            playerContainer.innerHTML = '<p style="color: #ff6b6b; font-weight: 600;">Opps! Link tidak dikenali.<br>Pastikan itu link valid dari YouTube atau Spotify.</p>';
+            // Tampilan error dengan Tailwind
+            playerContainer.innerHTML = `
+                <div class="text-center p-6">
+                    <i class="fa-solid fa-triangle-exclamation text-red-500 text-4xl mb-3"></i>
+                    <p class="text-red-400 font-semibold">Opps! Link tidak dikenali.</p>
+                    <p class="text-sm text-slate-400 mt-1">Pastikan itu link valid dari YouTube atau Spotify.</p>
+                </div>
+            `;
+            playerContainer.classList.add('border-white/5');
         }
-    }, 50); // Jeda 50ms untuk trik memicu ulang animasi CSS
+    }, 50);
 });

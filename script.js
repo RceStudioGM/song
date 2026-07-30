@@ -7,28 +7,44 @@ document.getElementById('playBtn').addEventListener('click', function() {
         return;
     }
 
-    // Reset kontainer sebelum memuat player baru
+    // Reset kontainer
     playerContainer.innerHTML = '';
     playerContainer.classList.remove('player-muncul', 'border-white/5');
 
-    // Beri jeda 50ms agar animasi CSS bisa ke-reset dan jalan lagi
     setTimeout(() => {
-        // Regex YouTube yang sudah di-upgrade (Support YouTube Music & Shorts)
-        const ytRegex = /(?:(?:music\.)?youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
-        const ytMatch = url.match(ytRegex);
+        // Cek apakah ini link dari YouTube atau YouTube Music
+        const isYouTube = url.toLowerCase().includes('youtube.com') || url.toLowerCase().includes('youtu.be');
+        
+        // Regex pintar untuk mengambil ID Video dan ID Playlist
+        const ytVideoMatch = url.match(/(?:v=|youtu\.be\/|embed\/)([a-zA-Z0-9_-]{11})/i);
+        const ytPlaylistMatch = url.match(/[?&]list=([a-zA-Z0-9_-]+)/i);
 
-        // Regex Spotify (Support track, playlist, album, episode)
+        // Regex Spotify (tetap sama)
         const spotifyRegex = /spotify\.com\/(track|playlist|album|episode)\/([a-zA-Z0-9]+)/i;
         const spotifyMatch = url.match(spotifyRegex);
 
         let iframe = document.createElement('iframe');
         iframe.className = "w-full rounded-2xl border-none";
 
-        if (ytMatch && ytMatch[1]) {
-            // Logika YouTube & YouTube Music
-            const videoId = ytMatch[1];
-            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-            iframe.style.height = "352px"; // Tinggi standar YT
+        if (isYouTube && (ytVideoMatch || ytPlaylistMatch)) {
+            // JIKA LINK ADALAH PLAYLIST MURNI
+            if (ytPlaylistMatch && (!ytVideoMatch || url.includes('/playlist?'))) {
+                const listId = ytPlaylistMatch[1];
+                // Format embed khusus untuk Playlist YouTube
+                iframe.src = `https://www.youtube.com/embed/videoseries?list=${listId}&autoplay=1`;
+            } 
+            // JIKA LINK ADALAH VIDEO/LAGU SATUAN
+            else if (ytVideoMatch) {
+                const videoId = ytVideoMatch[1];
+                let embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+                // Kalau lagunya ada di dalam playlist, muat juga daftar playlistnya
+                if (ytPlaylistMatch) {
+                    embedUrl += `&list=${ytPlaylistMatch[1]}`;
+                }
+                iframe.src = embedUrl;
+            }
+            
+            iframe.style.height = "352px"; 
             iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
             iframe.allowFullscreen = true;
             
@@ -36,16 +52,12 @@ document.getElementById('playBtn').addEventListener('click', function() {
             playerContainer.classList.add('player-muncul');
 
         } else if (spotifyMatch && spotifyMatch[1] && spotifyMatch[2]) {
-            // Logika Spotify
+            // LOGIKA SPOTIFY
             const type = spotifyMatch[1];
             const id = spotifyMatch[2];
             
-            // Link resmi embed Spotify terkini
             iframe.src = `https://open.spotify.com/embed/${type}/${id}?utm_source=generator&theme=0`;
-            
-            // Atur tinggi dinamis: Jika track (satu lagu) lebih pendek, jika playlist lebih tinggi
             iframe.style.height = (type === 'track') ? "152px" : "352px";
-            
             iframe.allow = "autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture";
             iframe.loading = "lazy";
             
@@ -53,17 +65,17 @@ document.getElementById('playBtn').addEventListener('click', function() {
             playerContainer.classList.add('player-muncul');
 
         } else {
-            // Tampilan error jika link salah atau tidak didukung
+            // ERROR HANDLING
             playerContainer.innerHTML = `
                 <div class="text-center p-6 py-10">
                     <i class="fa-solid fa-triangle-exclamation text-yellow-400 text-4xl mb-3"></i>
                     <p class="text-yellow-400 font-semibold text-lg">Opps! Link tidak dikenali.</p>
-                    <p class="text-sm text-gray-300 mt-1">Pastikan itu link valid dari YouTube, YouTube Music, atau Spotify.</p>
+                    <p class="text-sm text-gray-300 mt-1">Pastikan itu link valid dari YouTube, YT Music, atau Spotify.</p>
                 </div>
             `;
         }
         
-        // Mengosongkan input otomatis setelah tombol "PUTAR" ditekan
+        // Bersihkan kolom input otomatis
         document.getElementById('linkInput').value = '';
         
     }, 50);

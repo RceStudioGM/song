@@ -1,95 +1,167 @@
-/* Mengatur font dan background utama */
+/* Import font mewah dari Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;600&display=swap');
+
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #121212;
-    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    margin: 0;
+    background: radial-gradient(circle at top left, #2a0845 0%, #17153b 100%);
+    color: #fff;
+    overflow: hidden;
 }
 
-/* Kotak utama di tengah layar */
-.container {
-    background-color: #1e1e1e;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+/* Dekorasi background bercahaya di belakang panel */
+.bg-animation {
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(212,175,55,0.3) 0%, rgba(0,0,0,0) 70%);
+    border-radius: 50%;
+    z-index: -1;
+    animation: float 8s infinite alternate ease-in-out;
+}
+
+@keyframes float {
+    0% { transform: translate(-100px, -50px) scale(1); }
+    100% { transform: translate(100px, 50px) scale(1.2); }
+}
+
+/* Efek Glassmorphism (Kaca) untuk kontainer utama */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5);
+    padding: 40px;
+    border-radius: 20px;
     width: 90%;
-    max-width: 600px;
+    max-width: 650px;
     text-align: center;
+    position: relative;
 }
 
-h1 {
+/* Judul Mewah Emas */
+.glamor-title {
+    font-family: 'Playfair Display', serif;
     margin-top: 0;
-    color: #1db954; /* Warna hijau khas Spotify */
+    margin-bottom: 5px;
+    font-size: 2.5rem;
+    background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+    -webkit-background-clip: text;
+    color: transparent;
+    text-shadow: 0px 4px 15px rgba(212, 175, 55, 0.3);
 }
 
-/* Area input dan tombol */
+.subtitle {
+    color: #cccccc;
+    font-weight: 300;
+    margin-bottom: 30px;
+}
+
+/* Area input */
 .input-group {
     display: flex;
-    gap: 10px;
-    margin: 25px 0;
+    gap: 15px;
+    margin-bottom: 30px;
 }
 
 input {
     flex: 1;
-    padding: 12px 15px;
-    border: 1px solid #333;
-    border-radius: 6px;
-    background-color: #2a2a2a;
+    padding: 15px 20px;
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.3);
     color: #fff;
     font-size: 16px;
-    transition: border-color 0.2s;
+    font-family: 'Poppins', sans-serif;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
 }
 
 input:focus {
     outline: none;
-    border-color: #1db954;
+    border-color: #d4af37;
+    background: rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
 }
 
-button {
-    padding: 12px 24px;
-    background-color: #1db954;
-    color: white;
+/* Tombol Animasi Bercahaya */
+.glow-button {
+    padding: 0 30px;
+    background: linear-gradient(45deg, #d4af37, #ffdf00, #d4af37);
+    background-size: 200% auto;
+    color: #111;
     border: none;
-    border-radius: 6px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 16px;
-    font-weight: bold;
-    transition: background-color 0.2s, transform 0.1s;
+    font-weight: 600;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+    animation: shine 3s infinite linear;
 }
 
-button:hover {
-    background-color: #179945;
+.glow-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.6);
 }
 
-button:active {
-    transform: scale(0.97);
+.glow-button:active {
+    transform: translateY(1px);
 }
 
-/* Area tempat player iframe muncul */
+@keyframes shine {
+    to { background-position: 200% center; }
+}
+
+/* Area Player */
 .player-container {
     width: 100%;
     min-height: 250px;
-    background-color: #0a0a0a;
-    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 15px;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
-    border: 1px solid #333;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+    transition: all 0.5s ease;
 }
 
 .placeholder-text {
-    color: #666;
+    color: #888;
     font-style: italic;
+    font-weight: 300;
 }
 
-/* Mengatur ukuran iframe agar responsif */
 iframe {
     width: 100%;
     height: 352px;
     border: none;
+    border-radius: 15px;
+}
+
+/* Animasi Muncul untuk Player (dipicu oleh JS) */
+.animate-player {
+    animation: popIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    border: 1px solid rgba(212, 175, 55, 0.5);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.2);
+}
+
+@keyframes popIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9) translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
